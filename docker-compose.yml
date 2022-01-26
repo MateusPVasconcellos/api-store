@@ -3,8 +3,7 @@ version: '3'
 services:
   app:
     build: .
-    entrypoint: .docker/entrypoint.sh
-    container_name: shop-api
+    container_name: shop-app
     ports:
       - "3333:3333" 
     volumes:
@@ -15,13 +14,14 @@ services:
     environment:
         - DATABASE_HOST=db
         - DATABASE_PORT=5432
+
   db:
     build: .docker/postgres
     container_name: shop-db
     restart: always
     tty: true
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - .docker/dbdata:/var/lib/postgresql/data
     environment:
@@ -29,4 +29,21 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: shop-db
 
+  redis:
+    image: 'bitnami/redis:latest'
+    container_name: shop-redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: shop-pgadmin
+    tty: true
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
   
