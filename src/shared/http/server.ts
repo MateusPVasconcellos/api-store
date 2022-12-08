@@ -1,16 +1,19 @@
 import 'reflect-metadata';
 import express from 'express';
+import 'express-async-errors';
 import cors from 'cors';
 import router from './routes';
 import { errorHandler } from '@shared/middlewares/errorHandler';
 import '@shared/typeorm';
+import bodyParser from 'body-parser';
 
 const app = express();
 
+// Meddleware
+console.log('Loading middlewares and routes...');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
-
-// Meddlewares
-app.use(express.json());
 app.use(cors);
 
 // Error Handler

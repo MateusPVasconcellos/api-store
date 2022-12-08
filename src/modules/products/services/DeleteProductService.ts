@@ -23,4 +23,4 @@ class DeleteProductService {
   }
 }
 
-export default DeleteProductService;
+export default new DeleteProductService();

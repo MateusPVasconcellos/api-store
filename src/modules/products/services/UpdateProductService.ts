@@ -40,4 +40,4 @@ class UpdateProductService {
   }
 }
 
-export default UpdateProductService;
+export default new UpdateProductService();

@@ -21,4 +21,4 @@ class ShowProductService {
   }
 }
 
-export default ShowProductService;
+export default new ShowProductService();
