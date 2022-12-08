@@ -6,6 +6,7 @@ import router from './routes';
 import { errorHandler } from '@shared/middlewares/errorHandler';
 import '@shared/typeorm';
 import bodyParser from 'body-parser';
+import { errors } from 'celebrate';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cors);
 
 // Error Handler
 console.log('Loading error handlers...');
+router.use(errors());
 router.use(errorHandler);
 
 app.listen(3333, () => {

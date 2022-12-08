@@ -2,9 +2,10 @@
   "name": "api-vendas",
   "version": "1.0.0",
   "description": "",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
+    "typeorm": "npx ts-node ./node_modules/typeorm/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/http/server.ts",
     "lint": "eslint . --ext .ts --fix"
@@ -23,9 +24,10 @@
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.2.0",
     "prettier": "^2.5.1",
+    "ts-node": "^10.9.1",
     "ts-node-dev": "^1.1.8",
     "tsconfig-paths": "^3.12.0",
-    "typescript": "^4.5.5"
+    "typescript": "^4.9.4"
   },
   "dependencies": {
     "body-parser": "^1.20.1",
