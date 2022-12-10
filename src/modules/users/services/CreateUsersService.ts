@@ -1,7 +1,9 @@
 import AppError from '@shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
+import { hash } from 'bcrypt';
 import User from '../typeorm/entities/User';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
+import { CryptHelper } from '../helpers/crypt-helper';
 
 interface IRequest {
   name: string;
@@ -17,16 +19,18 @@ class CreateUsersService {
   }: IRequest): Promise<User | AppError> {
     const usersRepository = getCustomRepository(UsersRepository);
 
-    const userExists = await usersRepository.findByEmail(email);
+    const userExist = await usersRepository.findByEmail(email);
 
-    if (userExists) {
+    if (userExist) {
       throw new AppError('There is already a user with this email', 409);
     }
+
+    const hashedPassword = await CryptHelper.encrypt(password, 8);
 
     const user = await usersRepository.create({
       name,
       email,
-      password,
+      password: hashedPassword,
     });
 
     await usersRepository.save(user);

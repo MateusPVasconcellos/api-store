@@ -5,7 +5,7 @@
   "username": "postgres",
   "password": "postgres",
   "database": "shop-db",
-  "synchronize": false,
+  "synchronize": true,
   "migrations": ["./src/shared/typeorm/migrations/*.ts"],
   "entities": ["./src/modules/**/typeorm/entities/*.ts"],
   "cli": {

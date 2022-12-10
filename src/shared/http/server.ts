@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
@@ -22,6 +23,6 @@ console.log('Loading error handlers...');
 router.use(errors());
 router.use(errorHandler);
 
-app.listen(3333, () => {
+app.listen(process.env.PORT, () => {
   console.log(`Server is now running on port 3333`);
 });
