@@ -4,12 +4,13 @@ import DeleteProductService from '../services/DeleteProductService';
 import ListProductService from '../services/ListProductService';
 import ShowProductService from '../services/ShowProductService';
 import UpdateProductService from '../services/UpdateProductService';
+import httpStatus from 'http-status-codes';
 
 class ProductController {
   public async index(request: Request, response: Response): Promise<Response> {
     const products = await ListProductService.execute();
 
-    return response.status(200).json(products);
+    return response.status(httpStatus.OK).json(products);
   }
 
   public async show(request: Request, response: Response): Promise<Response> {

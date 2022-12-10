@@ -10,6 +10,7 @@ export class JwtHelper {
     const decodedPrivateKey = Buffer.from(privateKey, 'base64').toString();
     return jwt.sign(payload, decodedPrivateKey, {
       expiresIn,
+      algorithm: 'RS256',
     });
   }
 

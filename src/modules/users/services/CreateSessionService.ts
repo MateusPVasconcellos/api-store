@@ -5,6 +5,7 @@ import authConfig from '@config/auth';
 import User from '../typeorm/entities/User';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import { JwtHelper } from '../helpers/jwt-helper';
+import httpStatus from 'http-status-codes';
 
 interface IRequest {
   email: string;
@@ -23,7 +24,7 @@ class CreateSessionService {
     const user = await usersRepository.findByEmail(email);
 
     if (!user) {
-      throw new AppError('Invalid credentials', 401);
+      throw new AppError('Invalid credentials', httpStatus.UNAUTHORIZED);
     }
 
     const passwordConfirmed = await CryptHelper.compare(
@@ -32,7 +33,7 @@ class CreateSessionService {
     );
 
     if (!passwordConfirmed) {
-      throw new AppError('Wrong password', 401);
+      throw new AppError('Wrong password', httpStatus.UNAUTHORIZED);
     }
 
     const token = JwtHelper.sign(

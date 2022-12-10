@@ -2,6 +2,7 @@ import AppError from '@shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
 import Product from '../typeorm/entities/Product';
 import { ProductRepository } from '../typeorm/repositorys/ProductRepository';
+import httpStatus from 'http-status-codes';
 
 interface IRequest {
   name: string;
@@ -20,7 +21,10 @@ class CreateProductService {
     const productExists = await productRepository.findByName(name);
 
     if (productExists) {
-      throw new AppError('There is already a product with this name', 409);
+      throw new AppError(
+        'There is already a product with this name',
+        httpStatus.CONFLICT,
+      );
     }
 
     const product = await productRepository.create({

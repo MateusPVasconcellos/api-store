@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
-import CreateUsersService from '../services/CreateUsersService';
+import CreateUsersService from '../services/CreateUsersService ';
 import ListUsersService from '../services/ListUsersService';
+import httpStatus from 'http-status-codes';
 
 class UserController {
   public async index(request: Request, response: Response): Promise<Response> {
     const users = await ListUsersService.execute();
-    return response.status(200).json(users);
+    return response.status(httpStatus.OK).json(users);
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
@@ -13,7 +14,7 @@ class UserController {
 
     const user = await CreateUsersService.execute({ name, email, password });
 
-    return response.status(201).json(user);
+    return response.status(httpStatus.CREATED).json(user);
   }
 }
 
