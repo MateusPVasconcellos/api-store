@@ -8,9 +8,11 @@ import { errorHandler } from '@shared/middlewares/errorHandler';
 import '@shared/typeorm';
 import bodyParser from 'body-parser';
 import { errors } from 'celebrate';
+import uploadConfig from '@config/upload';
 
 const app = express();
 
+app.use('/files', express.static(uploadConfig.directory));
 // Meddleware
 console.log('Loading middlewares and routes...');
 app.use(bodyParser.json());
