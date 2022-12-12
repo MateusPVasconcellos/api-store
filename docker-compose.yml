@@ -32,3 +32,5 @@ services:
       - '8000:80'
     depends_on:
       - db
+volumes:
+  shop-db-data:
