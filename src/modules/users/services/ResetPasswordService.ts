@@ -37,6 +37,9 @@ class ResetPasswordService {
     }
 
     user.password = await CryptHelper.encrypt(password, 8);
+
+    await userTokenRepository.delete(userToken.id);
+    await usersRepository.save(user);
   }
 }
 
