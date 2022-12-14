@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status-codes';
 import ResetPasswordService from '../services/ResetPasswordService';
-import SendForgotPasswordEmailService from '../services/SendForgotPasswordEmailService';
 
 class ResetPasswordController {
   public async create(request: Request, response: Response): Promise<Response> {
