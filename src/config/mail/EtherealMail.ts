@@ -6,7 +6,7 @@ interface ITemplateVariables {
 }
 
 interface IHandlebarMailTemplate {
-  template: string;
+  file: string;
   variables: ITemplateVariables;
 }
 
