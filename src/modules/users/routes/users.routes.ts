@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import UserController from '../controllers/UserController';
-import { bodyUserDto } from '../helpers/body-user.dto';
 import isAuthenticated from '../../../shared/http/middlewares/isAuthenticated';
 import uploadConfig from '@config/upload';
 import UserAvatarController from '../controllers/UserAvatarController';
 import multer from 'multer';
+import { bodyUserDto } from '../dto/body-user.dto';
 
 const usersRouter = Router();
 const upload = multer(uploadConfig);

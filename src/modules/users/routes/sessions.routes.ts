@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import SessionsController from '../controllers/SessionsController';
-import { sessionUserDto } from '../helpers/body-session.dto';
+import { sessionUserDto } from '../dto/body-session.dto';
 
 const sessionRouter = Router();
 
