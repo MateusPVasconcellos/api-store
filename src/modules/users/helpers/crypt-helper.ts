@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 export class CryptHelper {
   static async encrypt(plain: string, saltRounds: number) {
-    return bcrypt.hash(plain, saltRounds);
+    return await bcrypt.hash(plain, saltRounds);
   }
 
   static async compare(plain: string, hash: string) {
