@@ -12,11 +12,7 @@ interface IRequest {
 }
 
 class CreateUsersService {
-  public async execute({
-    name,
-    email,
-    password,
-  }: IRequest): Promise<User | AppError> {
+  public async execute({ name, email, password }: IRequest): Promise<User> {
     const usersRepository = getCustomRepository(UsersRepository);
 
     const userExist = await usersRepository.findByEmail(email);

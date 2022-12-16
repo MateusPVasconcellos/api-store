@@ -10,10 +10,7 @@ interface IRequest {
 }
 
 class CreateCustomerService {
-  public async execute({
-    name,
-    email,
-  }: IRequest): Promise<Customer | AppError> {
+  public async execute({ name, email }: IRequest): Promise<Customer> {
     const customersRepository = getCustomRepository(CustomersRepository);
 
     const customerExist = await customersRepository.findByEmail(email);

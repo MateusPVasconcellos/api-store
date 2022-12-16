@@ -9,7 +9,7 @@ interface IRequest {
 }
 
 class DeleteProductService {
-  public async execute({ id }: IRequest): Promise<Product | AppError> {
+  public async execute({ id }: IRequest): Promise<Product> {
     const productRepository = getCustomRepository(ProductRepository);
 
     const product = await productRepository.findOne(id);
