@@ -1,9 +1,11 @@
+import isAuthenticated from '@shared/http/middlewares/isAuthenticated';
 import { Router } from 'express';
 import CustomersController from '../controllers/CustomersController';
 import { BodyCreateUpdateCostumersDto } from '../dto/body-create-update-costumers.dto';
 import { idCostumersDto } from '../dto/id-costumers.dto';
 
 const costumersRouter = Router();
+costumersRouter.use(isAuthenticated);
 
 costumersRouter.get('/', CustomersController.index);
 

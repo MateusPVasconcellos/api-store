@@ -1,3 +1,4 @@
+import costumersRouter from '@modules/customers/routes/customers.routes';
 import productsRouter from '@modules/products/routes/products.routes';
 import passwordRouter from '@modules/users/routes/password.routes';
 import profileRouter from '@modules/users/routes/profile.routes';
@@ -12,5 +13,6 @@ router.use('/users', usersRouter);
 router.use('/session', sessionRouter);
 router.use('/password', passwordRouter);
 router.use('/profile', profileRouter);
+router.use('/costumers', costumersRouter);
 
 export default router;
