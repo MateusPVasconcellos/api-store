@@ -1,6 +1,6 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
-export const bodyProductDto = function () {
+export const BodyCreateUpdateProductDto = function () {
   return celebrate({
     [Segments.BODY]: {
       name: Joi.string().required(),

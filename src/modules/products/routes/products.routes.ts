@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import ProductController from '../controllers/ProductController';
-import { bodyProductDto } from '../helpers/body-product.dto';
-import { idProductDto } from '../helpers/id-products.dto';
+import { BodyCreateUpdateProductDto } from '../dto/body-create-update-product.dto';
+import { idProductDto } from '../dto/id-products.dto';
 
 const productsRouter = Router();
 
@@ -9,11 +9,15 @@ productsRouter.get('/', ProductController.index);
 
 productsRouter.get('/:id', idProductDto(), ProductController.show);
 
-productsRouter.post('/', bodyProductDto(), ProductController.create);
+productsRouter.post(
+  '/',
+  BodyCreateUpdateProductDto(),
+  ProductController.create,
+);
 
 productsRouter.put(
   '/:id',
-  bodyProductDto(),
+  BodyCreateUpdateProductDto(),
   idProductDto(),
   ProductController.update,
 );
