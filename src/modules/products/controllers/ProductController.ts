@@ -18,7 +18,7 @@ class ProductController {
 
     const product = await ShowProductService.execute({ id });
 
-    return response.json(product);
+    return response.status(httpStatus.OK).json(product);
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
@@ -30,7 +30,7 @@ class ProductController {
       quantity,
     });
 
-    return response.json(product);
+    return response.status(httpStatus.CREATED).json(product);
   }
 
   public async update(request: Request, response: Response): Promise<Response> {
@@ -44,7 +44,7 @@ class ProductController {
       id,
     });
 
-    return response.json(product);
+    return response.status(httpStatus.OK).json(product);
   }
 
   public async delete(request: Request, response: Response): Promise<Response> {
@@ -54,7 +54,7 @@ class ProductController {
       id,
     });
 
-    return response.json([]);
+    return response.status(httpStatus.NO_CONTENT).json([]);
   }
 }
 
