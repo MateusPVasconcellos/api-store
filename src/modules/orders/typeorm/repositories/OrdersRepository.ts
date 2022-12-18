@@ -1,6 +1,6 @@
-import Customer from '@modules/customers/typeorm/entities/Customer';
+import Customer from '../../../customers/typeorm/entities/Customer';
 import { EntityRepository, Repository } from 'typeorm';
-import Order from '../typeorm/entities/Order';
+import Order from '../entities/Order';
 
 interface IProduct {
   product_id: string;

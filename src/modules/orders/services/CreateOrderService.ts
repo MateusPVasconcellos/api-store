@@ -1,7 +1,7 @@
 import AppError from '@shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
 import httpStatus from 'http-status-codes';
-import { OrdersRepository } from '../repositories/OrdersRepository';
+import { OrdersRepository } from '../typeorm/repositories/OrdersRepository';
 import Order from '../typeorm/entities/Order';
 import { ProductRepository } from '@modules/products/typeorm/repositories/ProductRepository';
 import { CustomersRepository } from '@modules/customers/typeorm/repositories/CustomersRepository';
@@ -42,23 +42,21 @@ class CreateOrderService {
 
     if (checkInexistentProducts.length) {
       throw new AppError(
-        `Could not find products with ids ${checkInexistentProducts.forEach(
-          product => `${product.id}, `,
-        )}`,
+        `Could not find products with id ${checkInexistentProducts[0].id}`,
         httpStatus.NOT_FOUND,
       );
     }
 
     const quantityAvailable = products.filter(
       product =>
-        existsProducts.filter(existProduct => existProduct.id === product.id)[0]
-          .quantity < product.quantity,
+        existsProducts.filter(p => p.id === product.id)[0].quantity <
+        product.quantity,
     );
 
-    if (!quantityAvailable.length) {
+    if (quantityAvailable.length) {
       throw new AppError(
-        `The quantity ${quantityAvailable[0].quantity} is not available for ${quantityAvailable[0].id}.`,
-        httpStatus.NOT_FOUND,
+        `The quantity ${quantityAvailable[0].quantity}
+         is not available for ${quantityAvailable[0].id}.`,
       );
     }
 
@@ -78,7 +76,7 @@ class CreateOrderService {
     const updatedProductQuantity = order_products.map(product => ({
       id: product.product_id,
       quantity:
-        existsProducts.filter(p => p.id === product.id)[0].quantity -
+        existsProducts.filter(p => p.id === product.product_id)[0].quantity -
         product.quantity,
     }));
 
