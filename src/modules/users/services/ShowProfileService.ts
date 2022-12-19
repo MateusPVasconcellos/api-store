@@ -14,7 +14,7 @@ class ShowProfileService {
     const user = await usersRepository.findById(user_id);
 
     if (!user) {
-      throw new AppError('User not found', httpStatus.NOT_FOUND);
+      throw new AppError('User not found.', httpStatus.NOT_FOUND);
     }
 
     return user;
