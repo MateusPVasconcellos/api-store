@@ -1,4 +1,3 @@
-import { classToClassFromExist } from 'class-transformer';
 import { Request, Response } from 'express';
 import httpStatus from 'http-status-codes';
 import ShowProfileService from '../services/ShowProfileService';
