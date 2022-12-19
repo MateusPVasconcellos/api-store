@@ -9,6 +9,7 @@ import '@shared/typeorm';
 import bodyParser from 'body-parser';
 import { errors } from 'celebrate';
 import uploadConfig from '@config/upload';
+import { pagination } from 'typeorm-pagination';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use('/files', express.static(uploadConfig.directory));
 console.log('Loading middlewares and routes...');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(pagination);
 app.use(router);
 app.use(cors);
 
