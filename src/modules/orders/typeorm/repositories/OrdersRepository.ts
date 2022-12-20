@@ -23,7 +23,7 @@ export const OrdersRepository = AppDataSource.getRepository(Order).extend({
     return order;
   },
 
-  async createOrder({ customer, products }: IRequest): Promise<Order | null> {
+  async createOrder({ customer, products }: IRequest): Promise<Order> {
     const order = this.create({
       customer,
       order_products: products,

@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import httpStatus from 'http-status-codes';
 import { OrdersRepository } from '../typeorm/repositories/OrdersRepository';
 import Order from '../typeorm/entities/Order';
@@ -18,17 +17,13 @@ interface IRequest {
 
 class CreateOrderService {
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
-    const ordersRepository = getCustomRepository(OrdersRepository);
-    const productsRepository = getCustomRepository(ProductRepository);
-    const customersRepository = getCustomRepository(CustomersRepository);
-
-    const existsCostumer = await customersRepository.findById(customer_id);
+    const existsCostumer = await CustomersRepository.findById(customer_id);
 
     if (!existsCostumer) {
       throw new AppError('Costumer not found.', httpStatus.NOT_FOUND);
     }
 
-    const existsProducts = await productsRepository.findAllByIds(products);
+    const existsProducts = await ProductRepository.findAllByIds(products);
 
     if (!existsProducts.length) {
       throw new AppError('Products not found.', httpStatus.NOT_FOUND);
@@ -66,7 +61,7 @@ class CreateOrderService {
       price: existsProducts.filter(p => p.id === product.id)[0].price,
     }));
 
-    const order = await ordersRepository.createOrder({
+    const order = await OrdersRepository.createOrder({
       customer: existsCostumer,
       products: serializedProducts,
     });
@@ -80,7 +75,7 @@ class CreateOrderService {
         product.quantity,
     }));
 
-    await productsRepository.save(updatedProductQuantity);
+    await ProductRepository.save(updatedProductQuantity);
 
     return order;
   }
