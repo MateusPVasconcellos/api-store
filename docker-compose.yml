@@ -16,7 +16,7 @@ services:
       POSTGRES_DB: shop-db
 
   redis:
-    image: 'bitnami/redis:latest'
+    image: 'redis:alpine'
     container_name: shop-redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes

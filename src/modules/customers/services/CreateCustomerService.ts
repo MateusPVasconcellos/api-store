@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import httpStatus from 'http-status-codes';
 import Customer from '../typeorm/entities/Customer';
 import { CustomersRepository } from '../typeorm/repositories/CustomersRepository';
@@ -11,9 +10,7 @@ interface IRequest {
 
 class CreateCustomerService {
   public async execute({ name, email }: IRequest): Promise<Customer> {
-    const customersRepository = getCustomRepository(CustomersRepository);
-
-    const customerExist = await customersRepository.findByEmail(email);
+    const customerExist = await CustomersRepository.findByEmail(email);
 
     if (customerExist) {
       throw new AppError(
@@ -22,12 +19,12 @@ class CreateCustomerService {
       );
     }
 
-    const customer = await customersRepository.create({
+    const customer = await CustomersRepository.create({
       name,
       email,
     });
 
-    await customersRepository.save(customer);
+    await CustomersRepository.save(customer);
     return customer;
   }
 }

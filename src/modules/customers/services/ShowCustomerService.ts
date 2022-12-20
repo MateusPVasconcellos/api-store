@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import httpStatus from 'http-status-codes';
 import Customer from '../typeorm/entities/Customer';
 import { CustomersRepository } from '../typeorm/repositories/CustomersRepository';
@@ -10,8 +9,7 @@ interface IRequest {
 
 class ShowCustomerService {
   public async execute({ id }: IRequest): Promise<Customer> {
-    const customersRepository = getCustomRepository(CustomersRepository);
-    const customer = await customersRepository.findById(id);
+    const customer = await CustomersRepository.findById(id);
 
     if (!customer) {
       throw new AppError('Customer not found', httpStatus.NOT_FOUND);

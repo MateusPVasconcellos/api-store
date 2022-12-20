@@ -4,9 +4,12 @@ import { ProductRepository } from '../typeorm/repositories/ProductRepository';
 
 class ListProductService {
   public async execute(): Promise<Product[]> {
-    const products = await ProductRepository.find();
+    let products = await RedisCache.recover<Product[]>('shop_api-PRODUCT-LIST');
 
-    await RedisCache.save('teste', 'teste');
+    if (!products) {
+      products = await ProductRepository.find();
+      await RedisCache.save('shop_api-PRODUCT-LIST', products);
+    }
 
     return products;
   }
