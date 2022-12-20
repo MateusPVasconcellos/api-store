@@ -1,3 +1,5 @@
+import RedisCache from '@shared/cache/RedisCache';
+import { RedisCustomersKeys } from '@shared/enums/redis-customers-keys';
 import AppError from '@shared/errors/AppError';
 import httpStatus from 'http-status-codes';
 import { CustomersRepository } from '../typeorm/repositories/CustomersRepository';
@@ -14,6 +16,7 @@ class DeleteCustomerService {
       throw new AppError('Customer not found', httpStatus.NOT_FOUND);
     }
 
+    await RedisCache.invalidate(RedisCustomersKeys.listCustomers);
     await CustomersRepository.remove(customer);
   }
 }

@@ -1,3 +1,5 @@
+import RedisCache from '@shared/cache/RedisCache';
+import { RedisCustomersKeys } from '@shared/enums/redis-customers-keys';
 import AppError from '@shared/errors/AppError';
 import httpStatus from 'http-status-codes';
 import Customer from '../typeorm/entities/Customer';
@@ -24,6 +26,7 @@ class CreateCustomerService {
       email,
     });
 
+    await RedisCache.invalidate(RedisCustomersKeys.listCustomers);
     await CustomersRepository.save(customer);
     return customer;
   }

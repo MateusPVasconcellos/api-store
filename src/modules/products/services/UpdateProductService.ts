@@ -2,6 +2,8 @@ import AppError from '@shared/errors/AppError';
 import Product from '../typeorm/entities/Product';
 import { ProductRepository } from '../typeorm/repositories/ProductRepository';
 import httpStatus from 'http-status-codes';
+import RedisCache from '@shared/cache/RedisCache';
+import { RedisProductsKeys } from '../../../shared/enums/redis-products-keys';
 
 interface IRequest {
   id: string;
@@ -36,6 +38,7 @@ class UpdateProductService {
     product.price = price;
     product.quantity = quantity;
 
+    await RedisCache.invalidate(RedisProductsKeys.listProducts);
     await ProductRepository.save(product);
 
     return product;
