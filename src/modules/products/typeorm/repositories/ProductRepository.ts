@@ -5,6 +5,7 @@ import Product from '../entities/Product';
 interface IFindAllByIds {
   id: string;
 }
+
 export const ProductRepository = AppDataSource.getRepository(Product).extend({
   async findByName(name: string): Promise<Product | null> {
     const product = this.findOne({

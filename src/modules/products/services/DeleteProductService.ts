@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import { ProductRepository } from '../typeorm/repositories/ProductRepository';
 import httpStatus from 'http-status-codes';
 
@@ -9,15 +8,13 @@ interface IRequest {
 
 class DeleteProductService {
   public async execute({ id }: IRequest): Promise<void> {
-    const productRepository = getCustomRepository(ProductRepository);
-
-    const product = await productRepository.findOne(id);
+    const product = await ProductRepository.findOne({ where: { id } });
 
     if (!product) {
       throw new AppError('Product Not Found', httpStatus.NOT_FOUND);
     }
 
-    await productRepository.remove(product);
+    await ProductRepository.remove(product);
   }
 }
 

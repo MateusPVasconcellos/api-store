@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import Product from '../typeorm/entities/Product';
 import { ProductRepository } from '../typeorm/repositories/ProductRepository';
 import httpStatus from 'http-status-codes';
@@ -18,14 +17,13 @@ class UpdateProductService {
     price,
     quantity,
   }: IRequest): Promise<Product> {
-    const productRepository = getCustomRepository(ProductRepository);
-    const product = await productRepository.findOne(id);
+    const product = await ProductRepository.findOne({ where: { id } });
 
     if (!product) {
       throw new AppError('Product Not Found', httpStatus.NOT_FOUND);
     }
 
-    const productExists = await productRepository.findByName(name);
+    const productExists = await ProductRepository.findByName(name);
 
     if (productExists && name != product.name) {
       throw new AppError(
@@ -38,7 +36,7 @@ class UpdateProductService {
     product.price = price;
     product.quantity = quantity;
 
-    await productRepository.save(product);
+    await ProductRepository.save(product);
 
     return product;
   }

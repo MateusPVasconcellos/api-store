@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import Product from '../typeorm/entities/Product';
 import { ProductRepository } from '../typeorm/repositories/ProductRepository';
 import httpStatus from 'http-status-codes';
@@ -12,9 +11,7 @@ interface IRequest {
 
 class CreateProductService {
   public async execute({ name, price, quantity }: IRequest): Promise<Product> {
-    const productRepository = getCustomRepository(ProductRepository);
-
-    const productExists = await productRepository.findByName(name);
+    const productExists = await ProductRepository.findByName(name);
 
     if (productExists) {
       throw new AppError(
@@ -23,13 +20,13 @@ class CreateProductService {
       );
     }
 
-    const product = await productRepository.create({
+    const product = ProductRepository.create({
       name,
       price,
       quantity,
     });
 
-    await productRepository.save(product);
+    await ProductRepository.save(product);
     return product;
   }
 }
