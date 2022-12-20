@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import User from '../typeorm/entities/User';
 import httpStatus from 'http-status-codes';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
@@ -21,14 +20,13 @@ class UpdateProfileService {
     password,
     old_password,
   }: IRequest): Promise<User> {
-    const usersRepository = getCustomRepository(UsersRepository);
-    const user = await usersRepository.findById(user_id);
+    const user = await UsersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User not found.', httpStatus.NOT_FOUND);
     }
 
-    const userUpdateEmail = await usersRepository.findByEmail(email);
+    const userUpdateEmail = await UsersRepository.findByEmail(email);
 
     if (userUpdateEmail && userUpdateEmail.id !== user.id) {
       throw new AppError(
@@ -57,7 +55,7 @@ class UpdateProfileService {
     user.name = name;
     user.email = email;
 
-    await usersRepository.save(user);
+    await UsersRepository.save(user);
 
     return user;
   }

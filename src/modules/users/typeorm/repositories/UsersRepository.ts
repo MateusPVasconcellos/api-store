@@ -1,9 +1,8 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { AppDataSource } from 'src/data-source';
 import User from '../entities/User';
 
-@EntityRepository(User)
-export class UsersRepository extends Repository<User> {
-  public async findByName(name: string): Promise<User | undefined> {
+export const UsersRepository = AppDataSource.getRepository(User).extend({
+  async findByName(name: string): Promise<User | null> {
     const user = await this.findOne({
       where: {
         name,
@@ -11,9 +10,9 @@ export class UsersRepository extends Repository<User> {
     });
 
     return user;
-  }
+  },
 
-  public async findById(id: string): Promise<User | undefined> {
+  async findById(id: string): Promise<User | null> {
     const user = await this.findOne({
       where: {
         id,
@@ -21,9 +20,9 @@ export class UsersRepository extends Repository<User> {
     });
 
     return user;
-  }
+  },
 
-  public async findByEmail(email: string): Promise<User | undefined> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await this.findOne({
       where: {
         email,
@@ -31,5 +30,5 @@ export class UsersRepository extends Repository<User> {
     });
 
     return user;
-  }
-}
+  },
+});

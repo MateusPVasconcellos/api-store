@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import { CryptHelper } from '../helpers/crypt-helper';
 import authConfig from '@config/auth';
 import User from '../typeorm/entities/User';
@@ -19,9 +18,7 @@ interface IResponse {
 
 class CreateSessionService {
   public async execute({ email, password }: IRequest): Promise<IResponse> {
-    const usersRepository = getCustomRepository(UsersRepository);
-
-    const user = await usersRepository.findByEmail(email);
+    const user = await UsersRepository.findByEmail(email);
 
     if (!user) {
       throw new AppError('Invalid credentials', httpStatus.UNAUTHORIZED);

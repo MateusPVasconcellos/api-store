@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import httpStatus from 'http-status-codes';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import { UserTokensRepository } from '../typeorm/repositories/UserTokensRepository';
@@ -12,17 +11,13 @@ interface IRequest {
 
 class SendForgotPasswordEmailService {
   public async execute({ email }: IRequest): Promise<void> {
-    const usersRepository = getCustomRepository(UsersRepository);
-
-    const userTokenRepository = getCustomRepository(UserTokensRepository);
-
-    const user = await usersRepository.findByEmail(email);
+    const user = await UsersRepository.findByEmail(email);
 
     if (!user) {
       throw new AppError('User not found', httpStatus.NOT_FOUND);
     }
 
-    const token = await userTokenRepository.generate(user.id);
+    const token = await UserTokensRepository.generate(user.id);
 
     const forgotPasswordEmailTemplate = path.resolve(
       __dirname,

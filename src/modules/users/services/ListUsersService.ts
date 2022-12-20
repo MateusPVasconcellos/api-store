@@ -1,4 +1,3 @@
-import { getCustomRepository } from 'typeorm';
 import User from '../typeorm/entities/User';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 
@@ -15,8 +14,7 @@ interface IPaginateUser {
 
 class ListUsersService {
   public async execute(): Promise<IPaginateUser> {
-    const usersRepository = getCustomRepository(UsersRepository);
-    const users = await usersRepository.createQueryBuilder().paginate();
+    const users = await UsersRepository.find().paginate();
 
     return users as IPaginateUser;
   }

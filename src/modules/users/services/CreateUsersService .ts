@@ -1,5 +1,4 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import User from '../typeorm/entities/User';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import { CryptHelper } from '../helpers/crypt-helper';
@@ -13,9 +12,7 @@ interface IRequest {
 
 class CreateUsersService {
   public async execute({ name, email, password }: IRequest): Promise<User> {
-    const usersRepository = getCustomRepository(UsersRepository);
-
-    const userExist = await usersRepository.findByEmail(email);
+    const userExist = await UsersRepository.findByEmail(email);
 
     if (userExist) {
       throw new AppError(
@@ -26,13 +23,13 @@ class CreateUsersService {
 
     const hashedPassword = await CryptHelper.encrypt(password, 8);
 
-    const user = await usersRepository.create({
+    const user = await UsersRepository.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    await usersRepository.save(user);
+    await UsersRepository.save(user);
     return user;
   }
 }

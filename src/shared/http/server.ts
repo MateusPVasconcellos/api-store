@@ -10,6 +10,15 @@ import bodyParser from 'body-parser';
 import { errors } from 'celebrate';
 import uploadConfig from '@config/upload';
 import { pagination } from 'typeorm-pagination';
+import { AppDataSource } from '../../data-source';
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!');
+  })
+  .catch(err => {
+    console.error('Error during Data Source initialization', err);
+  });
 
 const app = express();
 

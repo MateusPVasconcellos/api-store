@@ -1,10 +1,9 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import httpStatus from 'http-status-codes';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import { UserTokensRepository } from '../typeorm/repositories/UserTokensRepository';
 import { isAfter, addHours } from 'date-fns';
 import { CryptHelper } from '../helpers/crypt-helper';
+import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 
 interface IRequest {
   token: string;
@@ -13,17 +12,13 @@ interface IRequest {
 
 class ResetPasswordService {
   public async execute({ token, password }: IRequest): Promise<void> {
-    const usersRepository = getCustomRepository(UsersRepository);
-
-    const userTokenRepository = getCustomRepository(UserTokensRepository);
-
-    const userToken = await userTokenRepository.findByToken(token);
+    const userToken = await UserTokensRepository.findByToken(token);
 
     if (!userToken) {
       throw new AppError('Token not found.', httpStatus.NOT_FOUND);
     }
 
-    const user = await usersRepository.findById(userToken.user_id);
+    const user = await UsersRepository.findById(userToken.user_id);
 
     if (!user) {
       throw new AppError('User not found.', httpStatus.NOT_FOUND);
@@ -38,8 +33,8 @@ class ResetPasswordService {
 
     user.password = await CryptHelper.encrypt(password, 8);
 
-    await userTokenRepository.delete(userToken.id);
-    await usersRepository.save(user);
+    await UserTokensRepository.delete(userToken.id);
+    await UsersRepository.save(user);
   }
 }
 

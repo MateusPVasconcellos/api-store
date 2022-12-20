@@ -1,9 +1,10 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { AppDataSource } from 'src/data-source';
 import UserToken from '../entities/UserToken';
 
-@EntityRepository(UserToken)
-export class UserTokensRepository extends Repository<UserToken> {
-  public async findByToken(token: string): Promise<UserToken | undefined> {
+export const UserTokensRepository = AppDataSource.getRepository(
+  UserToken,
+).extend({
+  async findByToken(token: string): Promise<UserToken | null> {
     const userToken = await this.findOne({
       where: {
         token,
@@ -11,15 +12,15 @@ export class UserTokensRepository extends Repository<UserToken> {
     });
 
     return userToken;
-  }
+  },
 
-  public async generate(user_id: string): Promise<UserToken> {
-    const userToken = await this.create({
+  async generate(user_id: string): Promise<UserToken> {
+    const userToken = this.create({
       user_id,
     });
 
     await this.save(userToken);
 
     return userToken;
-  }
-}
+  },
+});
