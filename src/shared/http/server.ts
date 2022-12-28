@@ -11,6 +11,7 @@ import { errors } from 'celebrate';
 import uploadConfig from '@config/upload';
 import { pagination } from 'typeorm-pagination';
 import { AppDataSource } from '../../data-source';
+import rateLimiter from '@shared/middlewares/rateLimiter';
 
 AppDataSource.initialize()
   .then(() => {
@@ -27,6 +28,7 @@ app.use('/files', express.static(uploadConfig.directory));
 console.log('Loading middlewares and routes...');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(rateLimiter);
 app.use(pagination);
 app.use(router);
 app.use(cors);
