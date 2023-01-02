@@ -8,7 +8,7 @@ class UserAvatarController {
     if (!request.file?.filename) {
       throw new AppError('Missing file name.', httpStatus.BAD_REQUEST);
     }
-    const user = UpdateUserAvatarService.execute({
+    const user = await UpdateUserAvatarService.execute({
       userId: request.user.id,
       avatarFileName: request.file.filename,
     });

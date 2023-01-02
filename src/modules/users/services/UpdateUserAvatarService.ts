@@ -5,6 +5,7 @@ import uploadConfig from '@config/upload';
 import fs from 'fs';
 import User from '../typeorm/entities/User';
 import httpStatus from 'http-status-codes';
+import DiskStorageProvider from '@shared/provider/DiskStorageProvider';
 
 interface IRequest {
   userId: string;
@@ -20,15 +21,12 @@ class UpdateUserAvatarService {
     }
 
     if (user.avatar) {
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-      const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
-
-      if (userAvatarFileExists) {
-        await fs.promises.unlink(userAvatarFilePath);
-      }
+      await DiskStorageProvider.deleteFile(user.avatar);
     }
 
-    user.avatar = avatarFileName;
+    const fileName = await DiskStorageProvider.saveFile(avatarFileName);
+
+    user.avatar = fileName;
 
     await UsersRepository.save(user);
 
