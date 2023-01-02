@@ -18,7 +18,7 @@ class DiskStorageProvider {
     try {
       await fs.promises.stat(filePath);
     } catch (error) {
-      return console.log('Errrorrrr aqui');
+      return;
     }
 
     await fs.promises.unlink(filePath);

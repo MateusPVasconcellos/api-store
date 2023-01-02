@@ -7,7 +7,7 @@ import multer from 'multer';
 import { bodyUserDto } from '../dto/body-user.dto';
 
 const usersRouter = Router();
-const upload = multer(uploadConfig);
+const upload = multer(uploadConfig.multer);
 
 usersRouter.get('/', isAuthenticated, UserController.index);
 
