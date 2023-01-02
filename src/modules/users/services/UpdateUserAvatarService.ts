@@ -1,8 +1,5 @@
 import AppError from '@shared/errors/AppError';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
-import path from 'path';
-import uploadConfig from '@config/upload';
-import fs from 'fs';
 import User from '../typeorm/entities/User';
 import httpStatus from 'http-status-codes';
 import DiskStorageProvider from '@shared/provider/DiskStorageProvider';
