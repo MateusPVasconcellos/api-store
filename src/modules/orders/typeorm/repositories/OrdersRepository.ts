@@ -1,4 +1,4 @@
-import { AppDataSource } from 'src/data-source';
+import { AppDataSource } from 'data-source';
 import Customer from '../../../customers/typeorm/entities/Customer';
 import Order from '../entities/Order';
 

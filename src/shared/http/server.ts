@@ -10,8 +10,8 @@ import bodyParser from 'body-parser';
 import { errors } from 'celebrate';
 import uploadConfig from '@config/upload';
 import { pagination } from 'typeorm-pagination';
-import { AppDataSource } from '../../data-source';
 import rateLimiter from '@shared/middlewares/rateLimiter';
+import { AppDataSource } from 'data-source';
 
 AppDataSource.initialize()
   .then(() => {
