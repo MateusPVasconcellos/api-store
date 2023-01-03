@@ -8,6 +8,7 @@ class RedisCache {
   constructor() {
     if (!this.connected) {
       this.client = new Redis(cacheConfig.config.redis);
+      this.connected = true;
     }
   }
 
