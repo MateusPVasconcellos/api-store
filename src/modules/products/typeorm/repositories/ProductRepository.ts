@@ -1,4 +1,4 @@
-import { AppDataSource } from 'data-source';
+import { AppDataSource } from '@shared/typeorm/data-source';
 import { In } from 'typeorm';
 import Product from '../entities/Product';
 
