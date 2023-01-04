@@ -2,8 +2,8 @@ import RedisCache from '@shared/cache/RedisCache';
 import { RedisCustomersKeys } from '@shared/enums/redis-customers-keys';
 import AppError from '@shared/errors/AppError';
 import httpStatus from 'http-status-codes';
-import Customer from '../typeorm/entities/Customer';
-import { CustomersRepository } from '../typeorm/repositories/CustomersRepository';
+import Customer from '../infra/typeorm/entities/Customer';
+import { CustomersRepository } from '../infra/typeorm/repositories/CustomersRepository';
 
 interface IRequest {
   name: string;

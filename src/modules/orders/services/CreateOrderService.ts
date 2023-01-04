@@ -3,7 +3,7 @@ import httpStatus from 'http-status-codes';
 import { OrdersRepository } from '../typeorm/repositories/OrdersRepository';
 import Order from '../typeorm/entities/Order';
 import { ProductRepository } from '@modules/products/typeorm/repositories/ProductRepository';
-import { CustomersRepository } from '@modules/customers/typeorm/repositories/CustomersRepository';
+import { CustomersRepository } from '@modules/customers/infra/typeorm/repositories/CustomersRepository';
 
 interface IProduct {
   id: string;

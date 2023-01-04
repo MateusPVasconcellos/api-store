@@ -6,9 +6,9 @@
   "password": "postgres",
   "database": "shop-db",
   "synchronize": true,
-  "migrations": ["./dist/shared/typeorm/migrations/*.js"],
-  "entities": ["./dist/modules/**/typeorm/entities/*.js"],
+  "migrations": ["./dist/shared/infra/typeorm/migrations/*.js"],
+  "entities": ["./dist/modules/**/infra/typeorm/entities/*.js"],
   "cli": {
-    "migrationsDir": "./dist/shared/typeorm/migrations"
+    "migrationsDir": "./dist/shared/infra/typeorm/migrations"
   }
 }
