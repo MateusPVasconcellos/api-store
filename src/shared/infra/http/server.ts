@@ -6,6 +6,7 @@ import cors from 'cors';
 import router from './routes';
 import { errorHandler } from '@shared/middlewares/errorHandler';
 import '@shared/infra/typeorm';
+import '@shared/container';
 import bodyParser from 'body-parser';
 import { errors } from 'celebrate';
 import uploadConfig from '@config/upload';

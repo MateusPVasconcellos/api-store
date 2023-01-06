@@ -1,6 +1,7 @@
+import CreateCustomerService from '@modules/customers/services/CreateCustomerService';
 import { Request, Response } from 'express';
 import httpStatus from 'http-status-codes';
-import CreateCustomerService from '../../../services/CreateCustomerService';
+import { container } from 'tsyringe';
 import DeleteCustomerService from '../../../services/DeleteCustomerService';
 import ListCustomersService from '../../../services/ListCustomersService';
 import ShowCustomerService from '../../../services/ShowCustomerService';
@@ -24,7 +25,9 @@ class CustomersController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { name, email } = request.body;
 
-    const costumer = await CreateCustomerService.execute({
+    const createCustomerService = container.resolve(CreateCustomerService);
+
+    const costumer = await createCustomerService.execute({
       name,
       email,
     });

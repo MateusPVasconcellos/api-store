@@ -1,36 +1,63 @@
-import { AppDataSource } from '@shared/infra/typeorm/data-source';
+import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustomer';
+import { ICustomer } from '@modules/customers/domain/models/ICustomer';
+import { ICustomerRepositoriy } from '@modules/customers/domain/repositories/ICustomerRepository';
+import { DataSource, Repository } from 'typeorm';
 import Customer from '../entities/Customer';
 
-export const CustomersRepository = AppDataSource.getRepository(Customer).extend(
-  {
-    async findByName(name: string): Promise<Customer | null> {
-      const customer = await this.findOne({
-        where: {
-          name,
-        },
-      });
+class CustomersRepository
+  extends Repository<Customer>
+  implements ICustomerRepositoriy
+{
+  constructor(private dataSource: DataSource) {
+    super(Customer, dataSource.createEntityManager());
+  }
 
-      return customer;
-    },
+  public async createCustomer({
+    name,
+    email,
+  }: ICreateCustomer): Promise<Customer> {
+    const customer = this.create({ name, email });
 
-    async findById(id: string): Promise<Customer | null> {
-      const customer = await this.findOne({
-        where: {
-          id,
-        },
-      });
+    await this.save(customer);
 
-      return customer;
-    },
+    return customer;
+  }
 
-    async findByEmail(email: string): Promise<Customer | null> {
-      const customer = await this.findOne({
-        where: {
-          email,
-        },
-      });
+  public async saveCustomer(customer: ICustomer): Promise<Customer> {
+    await this.save(customer);
 
-      return customer;
-    },
-  },
-);
+    return customer;
+  }
+
+  public async findByName(name: string): Promise<Customer | null> {
+    const customer = await this.findOne({
+      where: {
+        name,
+      },
+    });
+
+    return customer;
+  }
+
+  public async findById(id: string): Promise<Customer | null> {
+    const customer = await this.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return customer;
+  }
+
+  public async findByEmail(email: string): Promise<Customer | null> {
+    const customer = await this.findOne({
+      where: {
+        email,
+      },
+    });
+
+    return customer;
+  }
+}
+
+export default CustomersRepository;
