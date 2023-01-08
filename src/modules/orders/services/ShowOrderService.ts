@@ -1,15 +1,22 @@
 import AppError from '@shared/errors/AppError';
 import httpStatus from 'http-status-codes';
-import { OrdersRepository } from '../typeorm/repositories/OrdersRepository';
-import Order from '../typeorm/entities/Order';
+import { inject, injectable } from 'tsyringe';
+import { IOrder } from '../domain/models/IOrder';
+import { IOrdersRepository } from '../domain/repositories/IOrdersRepository';
 
 interface IRequest {
   id: string;
 }
 
+@injectable()
 class ShowOrderService {
-  public async execute({ id }: IRequest): Promise<Order> {
-    const order = await OrdersRepository.findById(id);
+  constructor(
+    @inject('OrdersRepository')
+    private ordersRepository: IOrdersRepository,
+  ) {}
+
+  public async execute({ id }: IRequest): Promise<IOrder> {
+    const order = await this.ordersRepository.findById(id);
 
     if (!order) {
       throw new AppError('Order not found.', httpStatus.NOT_FOUND);
@@ -19,4 +26,4 @@ class ShowOrderService {
   }
 }
 
-export default new ShowOrderService();
+export default ShowOrderService;

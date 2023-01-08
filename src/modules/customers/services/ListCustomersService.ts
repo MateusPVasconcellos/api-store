@@ -1,16 +1,23 @@
 import RedisCache from '@shared/cache/RedisCache';
 import { RedisCustomersKeys } from '@shared/enums/redis-customers-keys';
-import Customer from '../infra/typeorm/entities/Customer';
-import { CustomersRepository } from '../infra/typeorm/repositories/CustomersRepository';
+import { inject, injectable } from 'tsyringe';
+import { ICustomer } from '../domain/models/ICustomer';
+import { ICustomerRepositoriy } from '../domain/repositories/ICustomerRepository';
 
+@injectable()
 class ListCustomersService {
-  public async execute(): Promise<Customer[]> {
-    let customers = await RedisCache.recover<Customer[]>(
+  constructor(
+    @inject('CustomersRepository')
+    private customerRepository: ICustomerRepositoriy,
+  ) {}
+
+  public async execute(): Promise<ICustomer[]> {
+    let customers = await RedisCache.recover<ICustomer[]>(
       RedisCustomersKeys.listCustomers,
     );
 
     if (!customers) {
-      customers = await CustomersRepository.find();
+      customers = await this.customerRepository.listCustomers();
       await RedisCache.save(RedisCustomersKeys.listCustomers, customers);
     }
 
@@ -18,4 +25,4 @@ class ListCustomersService {
   }
 }
 
-export default new ListCustomersService();
+export default ListCustomersService;

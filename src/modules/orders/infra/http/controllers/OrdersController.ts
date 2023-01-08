@@ -1,13 +1,16 @@
+import CreateOrderService from '@modules/orders/services/CreateOrderService';
+import ShowOrderService from '@modules/orders/services/ShowOrderService';
 import { Request, Response } from 'express';
 import httpStatus from 'http-status-codes';
-import CreateOrderService from '../services/CreateOrderService';
-import ShowOrderService from '../services/ShowOrderService';
+import { container } from 'tsyringe';
 
 class OrdersController {
   public async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
 
-    const order = await ShowOrderService.execute({ id });
+    const showOrderService = container.resolve(ShowOrderService);
+
+    const order = await showOrderService.execute({ id });
 
     return response.status(httpStatus.OK).json(order);
   }

@@ -1,21 +1,33 @@
-import RedisCache from '@shared/cache/RedisCache';
-import { RedisProductsKeys } from '../../../shared/enums/redis-products-keys';
-import Product from '../typeorm/entities/Product';
-import { ProductRepository } from '../typeorm/repositories/ProductRepository';
+import { inject, injectable } from 'tsyringe';
+import { IProductPaginate } from '../domain/models/IProductPaginate';
+import { IProductRepository } from '../domain/repositories/IProductRepository';
 
+interface SearchParams {
+  page: number;
+  limit: number;
+}
+
+@injectable()
 class ListProductService {
-  public async execute(): Promise<Product[]> {
-    let products = await RedisCache.recover<Product[]>(
-      RedisProductsKeys.listProducts,
-    );
+  constructor(
+    @inject('ProductsRepository')
+    private productsRepository: IProductRepository,
+  ) {}
 
-    if (!products) {
-      products = await ProductRepository.find();
-      await RedisCache.save(RedisProductsKeys.listProducts, products);
-    }
+  public async execute({
+    page,
+    limit,
+  }: SearchParams): Promise<IProductPaginate> {
+    const take = limit;
+    const skip = (Number(page) - 1) * take;
+    const products = await this.productsRepository.findAll({
+      page,
+      skip,
+      take,
+    });
 
     return products;
   }
 }
 
-export default new ListProductService();
+export default ListProductService;

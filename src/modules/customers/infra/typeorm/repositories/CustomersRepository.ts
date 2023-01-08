@@ -58,6 +58,16 @@ class CustomersRepository
 
     return customer;
   }
+
+  public async removeCustomer(customer: ICustomer): Promise<void> {
+    await this.remove(customer);
+  }
+
+  public async listCustomers(): Promise<Customer[]> {
+    const customers = await this.find();
+
+    return customers;
+  }
 }
 
 export default CustomersRepository;

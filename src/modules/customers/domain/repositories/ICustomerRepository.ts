@@ -11,4 +11,8 @@ export interface ICustomerRepositoriy {
   createCustomer({ name, email }: ICreateCustomer): Promise<ICustomer>;
 
   saveCustomer(customer: ICustomer): Promise<ICustomer>;
+
+  removeCustomer(customer: ICustomer): Promise<void>;
+
+  listCustomers(): Promise<ICustomer[]>;
 }

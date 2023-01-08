@@ -1,15 +1,21 @@
 import AppError from '@shared/errors/AppError';
 import httpStatus from 'http-status-codes';
-import Customer from '../infra/typeorm/entities/Customer';
-import { CustomersRepository } from '../infra/typeorm/repositories/CustomersRepository';
+import { inject, injectable } from 'tsyringe';
+import { ICustomer } from '../domain/models/ICustomer';
+import { ICustomerRepositoriy } from '../domain/repositories/ICustomerRepository';
 
 interface IRequest {
   id: string;
 }
 
+@injectable()
 class ShowCustomerService {
-  public async execute({ id }: IRequest): Promise<Customer> {
-    const customer = await CustomersRepository.findById(id);
+  constructor(
+    @inject('CustomersRepository')
+    private customerRepository: ICustomerRepositoriy,
+  ) {}
+  public async execute({ id }: IRequest): Promise<ICustomer> {
+    const customer = await this.customerRepository.findById(id);
 
     if (!customer) {
       throw new AppError('Customer not found', httpStatus.NOT_FOUND);
@@ -19,4 +25,4 @@ class ShowCustomerService {
   }
 }
 
-export default new ShowCustomerService();
+export default ShowCustomerService;

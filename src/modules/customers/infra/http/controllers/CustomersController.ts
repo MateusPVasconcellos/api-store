@@ -9,7 +9,9 @@ import UpdateCustomerService from '../../../services/UpdateCustomerService';
 
 class CustomersController {
   public async index(request: Request, response: Response): Promise<Response> {
-    const costumers = await ListCustomersService.execute();
+    const listCustomersService = container.resolve(ListCustomersService);
+
+    const costumers = await listCustomersService.execute();
 
     return response.status(httpStatus.OK).json(costumers);
   }
@@ -17,7 +19,9 @@ class CustomersController {
   public async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
 
-    const costumer = await ShowCustomerService.execute({ id });
+    const showCustomerService = container.resolve(ShowCustomerService);
+
+    const costumer = await showCustomerService.execute({ id });
 
     return response.status(httpStatus.OK).json(costumer);
   }
@@ -39,7 +43,9 @@ class CustomersController {
     const { name, email } = request.body;
     const { id } = request.params;
 
-    const costumer = await UpdateCustomerService.execute({
+    const updateCustomerService = container.resolve(UpdateCustomerService);
+
+    const costumer = await updateCustomerService.execute({
       name,
       email,
       id,
@@ -51,7 +57,9 @@ class CustomersController {
   public async delete(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
 
-    await DeleteCustomerService.execute({
+    const deleteCustomerService = container.resolve(DeleteCustomerService);
+
+    await deleteCustomerService.execute({
       id,
     });
 

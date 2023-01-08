@@ -1,3 +1,4 @@
+import Product from '@modules/products/infra/typeorm/entities/Product';
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import Order from './Order';
-import Product from '../../../products/typeorm/entities/Product';
 
 @Entity('orders_products')
 class OrdersProducts {

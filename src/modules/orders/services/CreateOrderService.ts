@@ -1,29 +1,36 @@
+import { ICustomerRepositoriy } from '@modules/customers/domain/repositories/ICustomerRepository';
+import { IProductRepository } from '@modules/products/domain/repositories/IProductRepository';
 import AppError from '@shared/errors/AppError';
 import httpStatus from 'http-status-codes';
-import { OrdersRepository } from '../typeorm/repositories/OrdersRepository';
-import Order from '../typeorm/entities/Order';
-import { ProductRepository } from '@modules/products/typeorm/repositories/ProductRepository';
-import { CustomersRepository } from '@modules/customers/infra/typeorm/repositories/CustomersRepository';
+import { inject, injectable } from 'tsyringe';
+import { IOrder } from '../domain/models/IOrder';
+import { IRequestCreateOrder } from '../domain/models/IRequestCreateOrder';
+import { IOrdersRepository } from '../domain/repositories/IOrdersRepository';
 
-interface IProduct {
-  id: string;
-  quantity: number;
-}
-
-interface IRequest {
-  customer_id: string;
-  products: IProduct[];
-}
-
+@injectable()
 class CreateOrderService {
-  public async execute({ customer_id, products }: IRequest): Promise<Order> {
-    const existsCostumer = await CustomersRepository.findById(customer_id);
+  constructor(
+    @inject('OrdersRepository')
+    private ordersRepository: IOrdersRepository,
+
+    @inject('ProductRepository')
+    private productRepository: IProductRepository,
+
+    @inject('CustomersRepository')
+    private customersRepository: ICustomerRepositoriy,
+  ) {}
+
+  public async execute({
+    customer_id,
+    products,
+  }: IRequestCreateOrder): Promise<IOrder> {
+    const existsCostumer = await this.customersRepository.findById(customer_id);
 
     if (!existsCostumer) {
       throw new AppError('Costumer not found.', httpStatus.NOT_FOUND);
     }
 
-    const existsProducts = await ProductRepository.findAllByIds(products);
+    const existsProducts = await this.productRepository.findAllByIds(products);
 
     if (!existsProducts.length) {
       throw new AppError('Products not found.', httpStatus.NOT_FOUND);
@@ -61,7 +68,7 @@ class CreateOrderService {
       price: existsProducts.filter(p => p.id === product.id)[0].price,
     }));
 
-    const order = await OrdersRepository.createOrder({
+    const order = await this.ordersRepository.createOrder({
       customer: existsCostumer,
       products: serializedProducts,
     });
@@ -75,10 +82,10 @@ class CreateOrderService {
         product.quantity,
     }));
 
-    await ProductRepository.save(updatedProductQuantity);
+    await this.productRepository.updateStock(updatedProductQuantity);
 
     return order;
   }
 }
 
-export default new CreateOrderService();
+export default CreateOrderService;
