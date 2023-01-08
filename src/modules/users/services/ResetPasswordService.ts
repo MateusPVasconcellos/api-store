@@ -1,24 +1,30 @@
 import AppError from '@shared/errors/AppError';
 import httpStatus from 'http-status-codes';
-import { UserTokensRepository } from '../typeorm/repositories/UserTokensRepository';
 import { isAfter, addHours } from 'date-fns';
 import { CryptHelper } from '../helpers/crypt-helper';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
+import { IUserTokensRepository } from '../domain/repositories/IUserTokenRepository';
+import { IResetPassword } from '../domain/models/IResetPassword';
 
-interface IRequest {
-  token: string;
-  password: string;
-}
-
+@injectable()
 class ResetPasswordService {
-  public async execute({ token, password }: IRequest): Promise<void> {
-    const userToken = await UserTokensRepository.findByToken(token);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository,
+
+    @inject('UserTokensRepository')
+    private userTokensRepository: IUserTokensRepository,
+  ) {}
+
+  public async execute({ token, password }: IResetPassword): Promise<void> {
+    const userToken = await this.userTokensRepository.findByToken(token);
 
     if (!userToken) {
       throw new AppError('Token not found.', httpStatus.NOT_FOUND);
     }
 
-    const user = await UsersRepository.findById(userToken.user_id);
+    const user = await this.usersRepository.findById(userToken.user_id);
 
     if (!user) {
       throw new AppError('User not found.', httpStatus.NOT_FOUND);
@@ -28,14 +34,14 @@ class ResetPasswordService {
     const compareDate = addHours(tokenCreatedAt, 2);
 
     if (isAfter(Date.now(), compareDate)) {
-      throw new AppError('Token expired,', httpStatus.UNAUTHORIZED);
+      throw new AppError('Token expired.', httpStatus.UNAUTHORIZED);
     }
 
     user.password = await CryptHelper.encrypt(password, 8);
 
-    await UserTokensRepository.delete(userToken.id);
-    await UsersRepository.save(user);
+    await this.userTokensRepository.deleteToken(userToken.id);
+    await this.usersRepository.saveUser(user);
   }
 }
 
-export default new ResetPasswordService();
+export default ResetPasswordService;

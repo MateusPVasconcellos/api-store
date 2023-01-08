@@ -1,24 +1,25 @@
 import AppError from '@shared/errors/AppError';
 import { CryptHelper } from '../helpers/crypt-helper';
 import authConfig from '@config/auth';
-import User from '../typeorm/entities/User';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import { JwtHelper } from '../helpers/jwt-helper';
 import httpStatus from 'http-status-codes';
+import { ICreateSession } from '../domain/models/ICreateSession';
+import { IUserAuthenticated } from '../domain/models/IUserAuthenticated';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
 
-interface IRequest {
-  email: string;
-  password: string;
-}
-
-interface IResponse {
-  user: User;
-  token: string;
-}
-
+@injectable()
 class CreateSessionService {
-  public async execute({ email, password }: IRequest): Promise<IResponse> {
-    const user = await UsersRepository.findByEmail(email);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository,
+  ) {}
+
+  public async execute({
+    email,
+    password,
+  }: ICreateSession): Promise<IUserAuthenticated> {
+    const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {
       throw new AppError('Invalid credentials', httpStatus.UNAUTHORIZED);
@@ -43,4 +44,4 @@ class CreateSessionService {
   }
 }
 
-export default new CreateSessionService();
+export default CreateSessionService;

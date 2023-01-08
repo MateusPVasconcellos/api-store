@@ -4,10 +4,7 @@ import RedisCache from '@shared/cache/RedisCache';
 import { RedisProductsKeys } from '../../../shared/enums/redis-products-keys';
 import { inject, injectable } from 'tsyringe';
 import { IProductRepository } from '../domain/repositories/IProductRepository';
-
-interface IRequest {
-  id: string;
-}
+import { IDeleteProduct } from '../domain/models/IDeleteProduct';
 
 @injectable()
 class DeleteProductService {
@@ -15,7 +12,8 @@ class DeleteProductService {
     @inject('ProductRepository')
     private productRepository: IProductRepository,
   ) {}
-  public async execute({ id }: IRequest): Promise<void> {
+
+  public async execute({ id }: IDeleteProduct): Promise<void> {
     const product = await this.productRepository.findById(id);
 
     if (!product) {

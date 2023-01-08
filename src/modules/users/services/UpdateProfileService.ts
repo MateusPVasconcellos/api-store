@@ -1,32 +1,32 @@
 import AppError from '@shared/errors/AppError';
-import User from '../typeorm/entities/User';
 import httpStatus from 'http-status-codes';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import { CryptHelper } from '../helpers/crypt-helper';
+import { IUpdateProfile } from '../domain/models/IUpdateProfile';
+import { IUser } from '../domain/models/IUser';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
 
-interface IRequest {
-  user_id: string;
-  name: string;
-  email: string;
-  password?: string;
-  old_password?: string;
-}
-
+@injectable()
 class UpdateProfileService {
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository,
+  ) {}
+
   public async execute({
     user_id,
     name,
     email,
     password,
     old_password,
-  }: IRequest): Promise<User> {
-    const user = await UsersRepository.findById(user_id);
+  }: IUpdateProfile): Promise<IUser> {
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User not found.', httpStatus.NOT_FOUND);
     }
 
-    const userUpdateEmail = await UsersRepository.findByEmail(email);
+    const userUpdateEmail = await this.usersRepository.findByEmail(email);
 
     if (userUpdateEmail && userUpdateEmail.id !== user.id) {
       throw new AppError(
@@ -55,10 +55,10 @@ class UpdateProfileService {
     user.name = name;
     user.email = email;
 
-    await UsersRepository.save(user);
+    await this.usersRepository.saveUser(user);
 
     return user;
   }
 }
 
-export default new UpdateProfileService();
+export default UpdateProfileService;

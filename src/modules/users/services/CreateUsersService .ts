@@ -1,37 +1,38 @@
 import AppError from '@shared/errors/AppError';
-import User from '../typeorm/entities/User';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import { CryptHelper } from '../helpers/crypt-helper';
 import httpStatus from 'http-status-codes';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
+import { IUser } from '../domain/models/IUser';
+import { ICreateUser } from '../domain/models/ICreateUser';
 
-interface IRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-
+@injectable()
 class CreateUsersService {
-  public async execute({ name, email, password }: IRequest): Promise<User> {
-    const userExist = await UsersRepository.findByEmail(email);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository,
+  ) {}
+
+  public async execute({ name, email, password }: ICreateUser): Promise<IUser> {
+    const userExist = await this.usersRepository.findByEmail(email);
 
     if (userExist) {
       throw new AppError(
-        'There is already a user with this email',
+        'There is already a user with this email.',
         httpStatus.CONFLICT,
       );
     }
 
     const hashedPassword = await CryptHelper.encrypt(password, 8);
 
-    const user = await UsersRepository.create({
+    const user = await this.usersRepository.createUser({
       name,
       email,
       password: hashedPassword,
     });
 
-    await UsersRepository.save(user);
     return user;
   }
 }
 
-export default new CreateUsersService();
+export default CreateUsersService;

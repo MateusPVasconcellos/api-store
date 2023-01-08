@@ -1,18 +1,25 @@
 import AppError from '@shared/errors/AppError';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
-import User from '../typeorm/entities/User';
 import httpStatus from 'http-status-codes';
 import DiskStorageProvider from '@shared/provider/storage/DiskStorageProvider';
 import upload from '@config/upload';
 import S3StorageProvider from '@shared/provider/storage/S3StorageProvider';
-interface IRequest {
-  userId: string;
-  avatarFileName: string;
-}
+import { IUpdateUserAvatar } from '../domain/models/IUpdateUserAvatar';
+import { IUser } from '../domain/models/IUser';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
 
+@injectable()
 class UpdateUserAvatarService {
-  public async execute({ avatarFileName, userId }: IRequest): Promise<User> {
-    const user = await UsersRepository.findById(userId);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository,
+  ) {}
+
+  public async execute({
+    avatarFilename,
+    user_id,
+  }: IUpdateUserAvatar): Promise<IUser> {
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User not found.', httpStatus.NOT_FOUND);
@@ -23,7 +30,7 @@ class UpdateUserAvatarService {
         await S3StorageProvider.deleteFile(user.avatar);
       }
 
-      const fileName = await S3StorageProvider.saveFile(avatarFileName);
+      const fileName = await S3StorageProvider.saveFile(avatarFilename);
 
       user.avatar = fileName;
     } else if (upload.driver === 'disk') {
@@ -31,15 +38,15 @@ class UpdateUserAvatarService {
         await DiskStorageProvider.deleteFile(user.avatar);
       }
 
-      const fileName = await DiskStorageProvider.saveFile(avatarFileName);
+      const fileName = await DiskStorageProvider.saveFile(avatarFilename);
 
       user.avatar = fileName;
     }
 
-    await UsersRepository.save(user);
+    await this.usersRepository.saveUser(user);
 
     return user;
   }
 }
 
-export default new UpdateUserAvatarService();
+export default UpdateUserAvatarService;

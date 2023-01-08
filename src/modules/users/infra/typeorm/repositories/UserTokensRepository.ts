@@ -1,10 +1,12 @@
-import { AppDataSource } from '@shared/infra/typeorm/data-source';
+import { IUserTokensRepository } from '@modules/users/domain/repositories/IUserTokenRepository';
+import { Repository } from 'typeorm';
 import UserToken from '../entities/UserToken';
 
-export const UserTokensRepository = AppDataSource.getRepository(
-  UserToken,
-).extend({
-  async findByToken(token: string): Promise<UserToken | null> {
+class UserTokensRepository
+  extends Repository<UserToken>
+  implements IUserTokensRepository
+{
+  public async findByToken(token: string): Promise<UserToken | null> {
     const userToken = await this.findOne({
       where: {
         token,
@@ -12,9 +14,9 @@ export const UserTokensRepository = AppDataSource.getRepository(
     });
 
     return userToken;
-  },
+  }
 
-  async generate(user_id: string): Promise<UserToken> {
+  public async generate(user_id: string): Promise<UserToken> {
     const userToken = this.create({
       user_id,
     });
@@ -22,5 +24,11 @@ export const UserTokensRepository = AppDataSource.getRepository(
     await this.save(userToken);
 
     return userToken;
-  },
-});
+  }
+
+  public async deleteToken(token_id: string): Promise<void> {
+    await this.delete(token_id);
+  }
+}
+
+export default UserTokensRepository;

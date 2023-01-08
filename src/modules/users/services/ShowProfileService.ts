@@ -1,15 +1,19 @@
 import AppError from '@shared/errors/AppError';
-import User from '../typeorm/entities/User';
 import httpStatus from 'http-status-codes';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
+import { inject, injectable } from 'tsyringe';
+import { IShowUser } from '../domain/models/IShowUser';
+import { IUser } from '../domain/models/IUser';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
 
-interface IRequest {
-  user_id: string;
-}
-
+@injectable()
 class ShowProfileService {
-  public async execute({ user_id }: IRequest): Promise<User> {
-    const user = await UsersRepository.findById(user_id);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository,
+  ) {}
+
+  public async execute({ id }: IShowUser): Promise<IUser> {
+    const user = await this.usersRepository.findById(id);
 
     if (!user) {
       throw new AppError('User not found.', httpStatus.NOT_FOUND);
@@ -19,4 +23,4 @@ class ShowProfileService {
   }
 }
 
-export default new ShowProfileService();
+export default ShowProfileService;

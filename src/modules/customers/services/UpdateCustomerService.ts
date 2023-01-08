@@ -4,13 +4,8 @@ import AppError from '@shared/errors/AppError';
 import httpStatus from 'http-status-codes';
 import { inject, injectable } from 'tsyringe';
 import { ICustomer } from '../domain/models/ICustomer';
+import { IUpdateCustomer } from '../domain/models/IUpdateCustomer';
 import { ICustomerRepositoriy } from '../domain/repositories/ICustomerRepository';
-
-interface IRequest {
-  id: string;
-  name: string;
-  email: string;
-}
 
 @injectable()
 class UpdateCustomerService {
@@ -19,7 +14,11 @@ class UpdateCustomerService {
     private customerRepository: ICustomerRepositoriy,
   ) {}
 
-  public async execute({ id, name, email }: IRequest): Promise<ICustomer> {
+  public async execute({
+    id,
+    name,
+    email,
+  }: IUpdateCustomer): Promise<ICustomer> {
     const customer = await this.customerRepository.findById(id);
 
     if (!customer) {
