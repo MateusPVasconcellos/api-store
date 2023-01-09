@@ -6,18 +6,19 @@ import {
   IProductRepository,
   SearchParams,
 } from '@modules/products/domain/repositories/IProductRepository';
-import { DataSource, In, Repository } from 'typeorm';
+import { AppDataSource } from '@shared/infra/typeorm';
+import { In, Repository } from 'typeorm';
 import Product from '../entities/Product';
 
-class ProductRepository
-  extends Repository<Product>
-  implements IProductRepository
-{
-  constructor(private dataSource: DataSource) {
-    super(Product, dataSource.createEntityManager());
+class ProductRepository implements IProductRepository {
+  private ormRepository: Repository<Product>;
+
+  constructor() {
+    this.ormRepository = AppDataSource.getRepository(Product);
   }
+
   public async findByName(name: string): Promise<Product | null> {
-    const product = this.findOne({
+    const product = this.ormRepository.findOne({
       where: {
         name,
       },
@@ -27,7 +28,7 @@ class ProductRepository
 
   public async findAllByIds(products: IFindAllByIds[]): Promise<Product[]> {
     const productIds = products.map(product => product.id);
-    const productsExists = await this.find({
+    const productsExists = await this.ormRepository.find({
       where: {
         id: In(productIds),
       },
@@ -41,29 +42,29 @@ class ProductRepository
     price,
     quantity,
   }: ICreateProduct): Promise<Product> {
-    const product = this.create({ name, price, quantity });
+    const product = this.ormRepository.create({ name, price, quantity });
 
-    await this.save(product);
+    await this.ormRepository.save(product);
 
     return product;
   }
 
   public async findById(id: string): Promise<Product | null> {
-    const product = this.findOne({ where: { id } });
+    const product = this.ormRepository.findOne({ where: { id } });
 
     return product;
   }
 
   public async removeProduct(product: Product): Promise<void> {
-    await this.remove(product);
+    await this.ormRepository.remove(product);
   }
 
   public async saveProduct(product: Product): Promise<void> {
-    await this.save(product);
+    await this.ormRepository.save(product);
   }
 
   public async updateStock(products: IUpdateStockProduct[]): Promise<void> {
-    await this.save(products);
+    await this.ormRepository.save(products);
   }
 
   public async findAll({
@@ -71,7 +72,8 @@ class ProductRepository
     skip,
     take,
   }: SearchParams): Promise<IProductPaginate> {
-    const [products, count] = await this.createQueryBuilder()
+    const [products, count] = await this.ormRepository
+      .createQueryBuilder()
       .skip(skip)
       .take(take)
       .getManyAndCount();

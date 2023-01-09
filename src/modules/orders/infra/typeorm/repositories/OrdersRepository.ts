@@ -1,7 +1,8 @@
 import { ICreateOrder } from '@modules/orders/domain/models/ICreateOrder';
 import { IOrderPaginate } from '@modules/orders/domain/models/IOrderPaginate';
 import { IOrdersRepository } from '@modules/orders/domain/repositories/IOrdersRepository';
-import { DataSource, Repository } from 'typeorm';
+import { AppDataSource } from '@shared/infra/typeorm';
+import { Repository } from 'typeorm';
 import Order from '../entities/Order';
 
 type SearchParams = {
@@ -10,12 +11,15 @@ type SearchParams = {
   take: number;
 };
 
-class OrdersRepository extends Repository<Order> implements IOrdersRepository {
-  constructor(private dataSource: DataSource) {
-    super(Order, dataSource.createEntityManager());
+class OrdersRepository implements IOrdersRepository {
+  private ormRepository: Repository<Order>;
+
+  constructor() {
+    this.ormRepository = AppDataSource.getRepository(Order);
   }
+
   public async findById(id: string): Promise<Order | null> {
-    const order = await this.findOne({
+    const order = await this.ormRepository.findOne({
       where: {
         id,
       },
@@ -27,12 +31,12 @@ class OrdersRepository extends Repository<Order> implements IOrdersRepository {
     customer,
     products,
   }: ICreateOrder): Promise<Order> {
-    const order = this.create({
+    const order = this.ormRepository.create({
       customer,
       order_products: products,
     });
 
-    await this.save(order);
+    await this.ormRepository.save(order);
 
     return order;
   }
@@ -42,7 +46,8 @@ class OrdersRepository extends Repository<Order> implements IOrdersRepository {
     skip,
     take,
   }: SearchParams): Promise<IOrderPaginate> {
-    const [orders, count] = await this.createQueryBuilder()
+    const [orders, count] = await this.ormRepository
+      .createQueryBuilder()
       .skip(skip)
       .take(take)
       .getManyAndCount();

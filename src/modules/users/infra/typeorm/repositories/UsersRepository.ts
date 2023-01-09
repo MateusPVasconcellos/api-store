@@ -1,27 +1,30 @@
 import { ICreateUser } from '@modules/users/domain/models/ICreateUser';
 import { IUserRepository } from '@modules/users/domain/repositories/IUserRepository';
-import { DataSource, Repository } from 'typeorm';
+import { AppDataSource } from '@shared/infra/typeorm';
+import { Repository } from 'typeorm';
 import User from '../entities/User';
 
-class UsersRepository extends Repository<User> implements IUserRepository {
-  constructor(private dataSource: DataSource) {
-    super(User, dataSource.createEntityManager());
+class UsersRepository implements IUserRepository {
+  private ormRepository: Repository<User>;
+
+  constructor() {
+    this.ormRepository = AppDataSource.getRepository(User);
   }
 
   public async saveUser(user: User): Promise<User> {
-    await this.save(user);
+    await this.ormRepository.save(user);
 
     return user;
   }
 
   public async findAllUsers(): Promise<User[] | null> {
-    const users = await this.find();
+    const users = await this.ormRepository.find();
 
     return users;
   }
 
   public async findByName(name: string): Promise<User | null> {
-    const user = await this.findOne({
+    const user = await this.ormRepository.findOne({
       where: {
         name,
       },
@@ -31,7 +34,7 @@ class UsersRepository extends Repository<User> implements IUserRepository {
   }
 
   public async findById(id: string): Promise<User | null> {
-    const user = await this.findOne({
+    const user = await this.ormRepository.findOne({
       where: {
         id,
       },
@@ -41,7 +44,7 @@ class UsersRepository extends Repository<User> implements IUserRepository {
   }
 
   public async findByEmail(email: string): Promise<User | null> {
-    const user = await this.findOne({
+    const user = await this.ormRepository.findOne({
       where: {
         email,
       },
@@ -55,9 +58,9 @@ class UsersRepository extends Repository<User> implements IUserRepository {
     email,
     password,
   }: ICreateUser): Promise<User> {
-    const user = await this.create({ name, email, password });
+    const user = await this.ormRepository.create({ name, email, password });
 
-    await this.save(user);
+    await this.ormRepository.save(user);
 
     return user;
   }

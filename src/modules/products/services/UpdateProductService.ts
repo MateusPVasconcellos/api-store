@@ -9,7 +9,7 @@ import { IUpdateProduct } from '../domain/models/IUpdateProduct';
 @injectable()
 class UpdateProductService {
   constructor(
-    @inject('ProductsRepository')
+    @inject('ProductRepository')
     private productsRepository: IProductRepository,
   ) {}
 

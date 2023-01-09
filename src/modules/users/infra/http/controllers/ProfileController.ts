@@ -1,14 +1,17 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status-codes';
-import ShowProfileService from '../services/ShowProfileService';
-import UpdateProfileService from '../services/UpdateProfileService';
 import { instanceToInstance } from 'class-transformer';
+import { container } from 'tsyringe';
+import ShowProfileService from '@modules/users/services/ShowProfileService';
+import UpdateProfileService from '@modules/users/services/UpdateProfileService';
 
 class ProfileController {
   public async show(request: Request, response: Response): Promise<Response> {
-    const user_id = request.user.id;
+    const id = request.user.id;
 
-    const user = await ShowProfileService.execute({ user_id });
+    const showProfileService = container.resolve(ShowProfileService);
+
+    const user = await showProfileService.execute({ id });
     return response.status(httpStatus.OK).json(instanceToInstance(user));
   }
 
@@ -16,7 +19,9 @@ class ProfileController {
     const user_id = request.user.id;
     const { name, email, password, old_password } = request.body;
 
-    const user = await UpdateProfileService.execute({
+    const updateProfileService = container.resolve(UpdateProfileService);
+
+    const user = await updateProfileService.execute({
       email,
       name,
       password,

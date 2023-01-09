@@ -8,7 +8,7 @@ import { IProductRepository } from '../domain/repositories/IProductRepository';
 @injectable()
 class ShowProductService {
   constructor(
-    @inject('ProductsRepository')
+    @inject('ProductRepository')
     private productsRepository: IProductRepository,
   ) {}
 

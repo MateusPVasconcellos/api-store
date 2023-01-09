@@ -1,8 +1,8 @@
+import { bodyCreateUpdateOrdersDto } from '@modules/orders/dto/body-create-update-order.dto';
+import { idOrdersDto } from '@modules/orders/dto/id-order.dto';
 import isAuthenticated from '@shared/infra/http/middlewares/isAuthenticated';
 import { Router } from 'express';
 import OrdersController from '../controllers/OrdersController';
-import { bodyCreateUpdateOrdersDto } from '../../dto/body-create-update-order.dto';
-import { idOrdersDto } from '../../dto/id-order.dto';
 
 const ordersRouter = Router();
 ordersRouter.use(isAuthenticated);

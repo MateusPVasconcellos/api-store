@@ -1,7 +1,7 @@
+import { BodyCreateUpdateProductDto } from '@modules/products/dto/body-create-update-product.dto';
+import { idProductDto } from '@modules/products/dto/id-products.dto';
 import { Router } from 'express';
 import ProductController from '../controllers/ProductController';
-import { BodyCreateUpdateProductDto } from '../dto/body-create-update-product.dto';
-import { idProductDto } from '../dto/id-products.dto';
 
 const productsRouter = Router();
 

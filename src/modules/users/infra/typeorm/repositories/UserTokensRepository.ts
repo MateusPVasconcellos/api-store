@@ -1,13 +1,16 @@
 import { IUserTokensRepository } from '@modules/users/domain/repositories/IUserTokenRepository';
+import { AppDataSource } from '@shared/infra/typeorm';
 import { Repository } from 'typeorm';
 import UserToken from '../entities/UserToken';
 
-class UserTokensRepository
-  extends Repository<UserToken>
-  implements IUserTokensRepository
-{
+class UserTokensRepository implements IUserTokensRepository {
+  private ormRepository: Repository<UserToken>;
+
+  constructor() {
+    this.ormRepository = AppDataSource.getRepository(UserToken);
+  }
   public async findByToken(token: string): Promise<UserToken | null> {
-    const userToken = await this.findOne({
+    const userToken = await this.ormRepository.findOne({
       where: {
         token,
       },
@@ -17,17 +20,17 @@ class UserTokensRepository
   }
 
   public async generate(user_id: string): Promise<UserToken> {
-    const userToken = this.create({
+    const userToken = this.ormRepository.create({
       user_id,
     });
 
-    await this.save(userToken);
+    await this.ormRepository.save(userToken);
 
     return userToken;
   }
 
   public async deleteToken(token_id: string): Promise<void> {
-    await this.delete(token_id);
+    await this.ormRepository.delete(token_id);
   }
 }
 

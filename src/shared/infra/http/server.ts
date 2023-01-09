@@ -3,16 +3,17 @@ import 'dotenv/config';
 import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
+import 'reflect-metadata';
+import '@shared/container';
 import router from './routes';
 import { errorHandler } from '@shared/middlewares/errorHandler';
 import '@shared/infra/typeorm';
-import '@shared/container';
 import bodyParser from 'body-parser';
 import { errors } from 'celebrate';
 import uploadConfig from '@config/upload';
 import { pagination } from 'typeorm-pagination';
 import rateLimiter from '@shared/middlewares/rateLimiter';
-import { AppDataSource } from '@shared/infra/typeorm/data-source';
+import { AppDataSource } from '../typeorm';
 
 AppDataSource.initialize()
   .then(() => {

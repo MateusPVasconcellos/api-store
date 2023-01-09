@@ -18,7 +18,9 @@ class OrdersController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { customer_id, products } = request.body;
 
-    const order = await CreateOrderService.execute({ customer_id, products });
+    const createOrderService = container.resolve(CreateOrderService);
+
+    const order = await createOrderService.execute({ customer_id, products });
 
     return response.status(httpStatus.CREATED).json(order);
   }

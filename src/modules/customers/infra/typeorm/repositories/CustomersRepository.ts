@@ -1,36 +1,36 @@
 import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustomer';
 import { ICustomer } from '@modules/customers/domain/models/ICustomer';
 import { ICustomerRepositoriy } from '@modules/customers/domain/repositories/ICustomerRepository';
-import { DataSource, Repository } from 'typeorm';
+import { AppDataSource } from '@shared/infra/typeorm';
+import { Repository } from 'typeorm';
 import Customer from '../entities/Customer';
 
-class CustomersRepository
-  extends Repository<Customer>
-  implements ICustomerRepositoriy
-{
-  constructor(private dataSource: DataSource) {
-    super(Customer, dataSource.createEntityManager());
+class CustomersRepository implements ICustomerRepositoriy {
+  private ormRepository: Repository<Customer>;
+
+  constructor() {
+    this.ormRepository = AppDataSource.getRepository(Customer);
   }
 
   public async createCustomer({
     name,
     email,
   }: ICreateCustomer): Promise<Customer> {
-    const customer = this.create({ name, email });
+    const customer = this.ormRepository.create({ name, email });
 
-    await this.save(customer);
+    await this.ormRepository.save(customer);
 
     return customer;
   }
 
   public async saveCustomer(customer: ICustomer): Promise<Customer> {
-    await this.save(customer);
+    await this.ormRepository.save(customer);
 
     return customer;
   }
 
   public async findByName(name: string): Promise<Customer | null> {
-    const customer = await this.findOne({
+    const customer = await this.ormRepository.findOne({
       where: {
         name,
       },
@@ -40,7 +40,7 @@ class CustomersRepository
   }
 
   public async findById(id: string): Promise<Customer | null> {
-    const customer = await this.findOne({
+    const customer = await this.ormRepository.findOne({
       where: {
         id,
       },
@@ -50,7 +50,7 @@ class CustomersRepository
   }
 
   public async findByEmail(email: string): Promise<Customer | null> {
-    const customer = await this.findOne({
+    const customer = await this.ormRepository.findOne({
       where: {
         email,
       },
@@ -60,11 +60,11 @@ class CustomersRepository
   }
 
   public async removeCustomer(customer: ICustomer): Promise<void> {
-    await this.remove(customer);
+    await this.ormRepository.remove(customer);
   }
 
   public async listCustomers(): Promise<Customer[]> {
-    const customers = await this.find();
+    const customers = await this.ormRepository.find();
 
     return customers;
   }

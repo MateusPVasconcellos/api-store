@@ -1,8 +1,8 @@
+import { passwordForgotDto } from '@modules/users/dto/body-password-forgot.dto';
+import { resetPasswordDto } from '@modules/users/dto/body-reset-password.dto';
 import { Router } from 'express';
 import ForgotPasswordController from '../controllers/ForgotPasswordController';
 import ResetPasswordController from '../controllers/ResetPasswordController';
-import { passwordForgotDto } from '../dto/body-password-forgot.dto';
-import { resetPasswordDto } from '../dto/body-reset-password.dto';
 
 const passwordRouter = Router();
 

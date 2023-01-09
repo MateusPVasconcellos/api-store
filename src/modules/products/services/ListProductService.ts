@@ -10,7 +10,7 @@ interface SearchParams {
 @injectable()
 class ListProductService {
   constructor(
-    @inject('ProductsRepository')
+    @inject('ProductRepository')
     private productsRepository: IProductRepository,
   ) {}
 

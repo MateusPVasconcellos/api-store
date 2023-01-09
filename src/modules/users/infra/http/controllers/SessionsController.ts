@@ -1,12 +1,15 @@
+import CreateSessionService from '@modules/users/services/CreateSessionService';
 import { instanceToInstance } from 'class-transformer';
 import { Request, Response } from 'express';
-import CreateSessionService from '../services/CreateSessionService';
+import { container } from 'tsyringe';
 
 class SessionController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { email, password } = request.body;
 
-    const user = await CreateSessionService.execute({
+    const createSessionService = container.resolve(CreateSessionService);
+
+    const user = await createSessionService.execute({
       email,
       password,
     });
